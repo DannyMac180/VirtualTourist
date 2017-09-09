@@ -14,7 +14,7 @@ class TravelLocationsVC: UIViewController, MKMapViewDelegate, UIGestureRecognize
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var deletePinsLabel: UILabel!
-
+    
     var gestureBegin: Bool = false
     var editMode: Bool = false
     var pins: [Pin] = []
@@ -59,8 +59,13 @@ class TravelLocationsVC: UIViewController, MKMapViewDelegate, UIGestureRecognize
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let pinView = MKPinAnnotationView()
-        pinView.animatesDrop = true
+        do {
+        
+        try print(getCoreDataStack().context.count(for: getFetchedResultsController().fetchRequest))
+            
+        } catch {
+            print("Could not retrieve context count.")
+        }
         
         deletePinsLabel.isHidden = true
         
@@ -108,6 +113,14 @@ class TravelLocationsVC: UIViewController, MKMapViewDelegate, UIGestureRecognize
         }
     }
     
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pinView")
+        pinView.animatesDrop = true
+        
+        return pinView
+    }
+    
     @IBAction func longPressGestureAction(_ sender: Any) {
         
         if gestureBegin {
@@ -125,12 +138,12 @@ class TravelLocationsVC: UIViewController, MKMapViewDelegate, UIGestureRecognize
         let coordToAdd = mapView.convert(fromPoint, toCoordinateFrom: mapView)
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordToAdd
-        addCoreData(of: annotation)
+        saveCoreData(of: annotation)
         mapView.addAnnotation(annotation)
         
     }
     
-    func addCoreData(of: MKAnnotation) {
+    func saveCoreData(of: MKPointAnnotation) {
         
         let coord = of.coordinate
         let managedContext = getCoreDataStack().context
