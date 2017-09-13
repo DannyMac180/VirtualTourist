@@ -25,64 +25,37 @@ class TravelLocationsVC: UIViewController, MKMapViewDelegate, UIGestureRecognize
         return appDelegate.stack
     }
     
-    func getFetchedResultsController() -> NSFetchedResultsController<NSFetchRequestResult> {
-        
-        let stack = getCoreDataStack()
-        
-        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
-        fr.sortDescriptors = []
-        
-        return NSFetchedResultsController(fetchRequest: fr, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
-    }
-    
-    func loadSavedPins() -> [Pin]? {
-        
-        do {
-            
-            var pinsArray: [Pin] = []
-            let fetchedResultsController = getFetchedResultsController()
-            try fetchedResultsController.performFetch()
-            let pinCount = try fetchedResultsController.managedObjectContext.count(for: fetchedResultsController.fetchRequest)
-            
-            for index in 0..<pinCount {
-                
-                pins.append(fetchedResultsController.object(at: IndexPath(row: index, section: 0)) as! Pin)
-            }
-            
-            return pinsArray
-            
-        } catch {
-            return nil
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        do {
-        
-        try print(getCoreDataStack().context.count(for: getFetchedResultsController().fetchRequest))
-            
-        } catch {
-            print("Could not retrieve context count.")
-        }
         
         deletePinsLabel.isHidden = true
         
         setRightBarButtonItem()
         
-        let savedPins = loadSavedPins()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        if let savedPins = savedPins {
-            pins = savedPins
+        let managedObjectContext = getCoreDataStack().context
+        
+        let pinsFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+        
+        do {
+            
+            pins = try managedObjectContext.fetch(pinsFetch) as! [Pin]
+        
+        } catch {
+            
+            fatalError("Failed to fetch employees: \(error)")
+        
         }
         
         for pin in pins {
             
             let coord = CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude)
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coord
-            mapView.addAnnotation(annotation)
+            addAnnotationToMap(fromCoord: coord)
+            
         }
     }
     
@@ -141,6 +114,13 @@ class TravelLocationsVC: UIViewController, MKMapViewDelegate, UIGestureRecognize
         saveCoreData(of: annotation)
         mapView.addAnnotation(annotation)
         
+    }
+    
+    func addAnnotationToMap(fromCoord: CLLocationCoordinate2D) {
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = fromCoord
+        mapView.addAnnotation(annotation)
     }
     
     func saveCoreData(of: MKPointAnnotation) {

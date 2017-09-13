@@ -114,7 +114,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="FXr-L3-JOT" userLabel="PhotoCell">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="photoCell" id="FXr-L3-JOT" userLabel="PhotoCell" customClass="CollectionViewCell" customModule="Virtual_Tourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="123" height="109"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -139,6 +139,10 @@
                                             <constraint firstAttribute="bottomMargin" secondItem="FwW-Od-eQ2" secondAttribute="bottom" constant="37" id="qRN-m3-c4W"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="FwW-Od-eQ2" secondAttribute="trailing" constant="44" id="ycM-g9-Jy4"/>
                                         </constraints>
+                                        <connections>
+                                            <outlet property="activityIndicator" destination="FwW-Od-eQ2" id="fWV-qm-1cG"/>
+                                            <outlet property="imageView" destination="dIa-rA-JUJ" id="pda-ky-bHp"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -148,8 +152,12 @@
                             </collectionView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="27V-c6-bqa">
                                 <rect key="frame" x="0.0" y="620" width="375" height="47"/>
+                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                 <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionAction:" destination="ZiF-mt-TD5" eventType="touchUpInside" id="BDK-yx-NQo"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NO PHOTOS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wUx-nI-5KG">
                                 <rect key="frame" x="120" y="351" width="121" height="45"/>

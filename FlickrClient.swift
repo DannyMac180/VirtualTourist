@@ -10,6 +10,13 @@ import Foundation
 
 class FlickrClient {
     
+    class func sharedInstance() -> FlickrClient {
+        struct Singleton {
+            static var sharedInstance = FlickrClient()
+        }
+        return Singleton.sharedInstance
+    }
+    
     // MARK: Keys
     
     private static let flickrURL = "https://api.flickr.com/services/rest/"
@@ -20,9 +27,9 @@ class FlickrClient {
     
     // MARK: Get Image Function
     
-    static func getFlickrImages(lat: Double, long: Double, completionHandler: @escaping (_ success: Bool, _ flickrImages: [FlickrImage]?) -> Void) {
+    func getFlickrImages(lat: Double, long: Double, completionHandler: @escaping (_ success: Bool, _ flickrImages: [FlickrImage]?) -> Void) {
         
-        let request = NSMutableURLRequest(url: URL(string: "\(flickrURL)?method=\(searchMethod)&format=\(format)&api_key=\(apiKey)&lat=\(lat)&lon=\(long)&radius=\(searchRangeKM)")!)
+        let request = NSMutableURLRequest(url: URL(string: "\(FlickrClient.flickrURL)?method=\(FlickrClient.searchMethod)&format=\(FlickrClient.format)&api_key=\(FlickrClient.apiKey)&lat=\(lat)&lon=\(long)&radius=\(FlickrClient.searchRangeKM)")!)
         
         let session = URLSession.shared
         
